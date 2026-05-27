@@ -200,6 +200,11 @@ func (w *zcWriter) WriteBinary(b []byte) (n int, err error) {
 	return w.buf.WriteBinary(b)
 }
 
+// WriteBinaryWithThreshold implements Writer.
+func (w *zcWriter) WriteBinaryWithThreshold(b []byte, threshold int) (n int, err error) {
+	return w.buf.WriteBinaryWithThreshold(b, threshold)
+}
+
 // WriteDirect implements Writer.
 func (w *zcWriter) WriteDirect(p []byte, remainCap int) error {
 	return w.buf.WriteDirect(p, remainCap)

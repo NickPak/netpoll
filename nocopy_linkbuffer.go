@@ -548,6 +548,11 @@ func (b *UnsafeLinkBuffer) WriteString(s string) (n int, err error) {
 
 // WriteBinary implements Writer.
 func (b *UnsafeLinkBuffer) WriteBinary(p []byte) (n int, err error) {
+	return b.WriteBinaryWithThreshold(p, BinaryInplaceThreshold)
+}
+
+// WriteBinaryWithThreshold implements Writer.
+func (b *UnsafeLinkBuffer) WriteBinaryWithThreshold(p []byte, threshold int) (n int, err error) {
 	n = len(p)
 	if n == 0 {
 		return
@@ -555,7 +560,7 @@ func (b *UnsafeLinkBuffer) WriteBinary(p []byte) (n int, err error) {
 	b.mallocSize += n
 
 	// TODO: Verify that all nocopy is possible under mcache.
-	if n > BinaryInplaceThreshold {
+	if n > threshold {
 		// expand buffer directly with nocopy
 		b.write.next = newLinkBufferNode(0)
 		b.write = b.write.next

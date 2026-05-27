@@ -305,6 +305,14 @@ func (c *connection) WriteBinary(b []byte) (n int, err error) {
 	return c.outputBuffer.WriteBinary(b)
 }
 
+// WriteBinaryWithThreshold implements Connection.
+func (c *connection) WriteBinaryWithThreshold(b []byte, threshold int) (n int, err error) {
+	if !c.IsActive() {
+		return 0, Exception(ErrConnClosed, "when write binary with threshold")
+	}
+	return c.outputBuffer.WriteBinaryWithThreshold(b, threshold)
+}
+
 // WriteDirect implements Connection.
 func (c *connection) WriteDirect(p []byte, remainCap int) (err error) {
 	if !c.IsActive() {

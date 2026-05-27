@@ -148,6 +148,19 @@ type Writer interface {
 	// so make sure that the slice b will not be changed.
 	WriteBinary(b []byte) (n int, err error)
 
+	// WriteBinaryWithThreshold writes b into the buffer.
+	//   - If len(b) > threshold, b is mounted directly without copy (zero-copy).
+	//     The caller MUST keep b valid until Flush completes.
+	//   - Otherwise, b is copied into the buffer's internal node.
+	//
+	// Special threshold values:
+	//   - threshold = 0: always mount b without copy regardless of size.
+	//   - threshold = math.MaxInt: always copy b.
+	//
+	// Compared to WriteDirect, this function is O(1) per call (no link buffer
+	// traversal), so it is safe to call frequently in batched outbound paths.
+	WriteBinaryWithThreshold(b []byte, threshold int) (n int, err error)
+
 	// WriteByte is a faster implementation of Malloc when a byte needs to be written.
 	// It replaces:
 	//
